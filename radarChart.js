@@ -12,6 +12,7 @@ let genreAttributes = {genre: undefined, danceability: 0.0, energy: 0.0, speechi
 let genres = [];
 
 let radarAnimationSpeed = 800;
+let rawSpotifyData = undefined;
 
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -20,9 +21,9 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(function (values) {
             rawSpotifyData = values[0];
 
-            rawSpotifyData = d3.group(rawSpotifyData, d=> d['genre'].split(',')[0]);
+            const groupedSpotifyData = d3.group(rawSpotifyData, d=> d['genre'].split(',')[0]);
 
-            rawSpotifyData.forEach(songsOfGenre => {
+            groupedSpotifyData.forEach(songsOfGenre => {
                 let tempGenreAttributes = Object.create(genreAttributes);
                 tempGenreAttributes.genre = songsOfGenre[0]['genre'].split(',')[0];
                 songsOfGenre.forEach(song => {
@@ -44,13 +45,26 @@ document.addEventListener('DOMContentLoaded', function () {
                 genres.push(tempGenreAttributes);
             })
 
-
-            initChart();
+            makeRadarWaypoints();
 
         });
 });
 
-function initChart(){
+function makeRadarWaypoints(){
+    new Waypoint({
+        element: document.getElementById('radarChartStep1'),
+        handler: function(direction) {
+            if(direction === 'down'){
+                radarChartStep1();
+            } else {
+
+            }
+        },
+        offset: '50%'
+    });
+}
+
+function radarChartStep1(){
     radarSvg = d3.select("#radarChartSvg")
     radarRadialScale = d3.scaleLinear()
         .domain([0,1])
@@ -109,8 +123,6 @@ function initChart(){
             .attr('opacity', 1)
             .text(ft_name);
     }
-
-    updateRadarChart('pop');
 }
 
 function updateRadarChart(genre){
@@ -126,7 +138,6 @@ function updateRadarChart(genre){
         .join(
             enter => enter.append('path')
                 .transition()
-                .delay(radarAnimationSpeed+500)
                 .duration(radarAnimationSpeed)
                 .attr("d",(d) => {return line(getRadarPathCoordinates(d));})
                 .attr("stroke-width", 3)
@@ -155,7 +166,6 @@ function drawCustomGenre(danceability, energy, speechiness, acousticness, livene
 
     let customGenre =  [{genre: 'custom', danceability: +danceability, energy: +energy, speechiness: +speechiness,
         acousticness: +acousticness, liveness: +liveness, valence: +valence}];
-    console.log(customGenre);
 
     radarSvg.selectAll('.customPath')
         .data(customGenre)
@@ -181,6 +191,43 @@ function drawCustomGenre(danceability, energy, speechiness, acousticness, livene
                 .remove() //Transition the element and then remove
         )
         .classed('customPath', true) //Used to change hover opacity
+}
+
+function computeClosestMatch(danceability, energy, speechiness, acousticness, liveness, valence){
+    var closestSongError = Number.MAX_VALUE;
+    var closestSong = undefined;
+    rawSpotifyData.forEach(song => {
+        const dError = Math.abs(song.danceability - danceability);
+        const eError = Math.abs(song.energy - energy);
+        const sError = Math.abs(song.speechiness - speechiness);
+        const aError = Math.abs(song.acousticness - acousticness);
+        const lError = Math.abs(song.liveness - liveness);
+        const vError = Math.abs(song.valence - valence);
+        const totalError = dError + eError + sError + aError + lError + vError;
+        if(totalError < closestSongError){
+            closestSongError = totalError;
+            closestSong = song;
+        }
+    })
+    console.log(closestSong);
+
+
+    var closestGenreError = Number.MAX_VALUE;
+    var closestGenre = undefined;
+    genres.forEach(genre =>{
+        const dError = Math.abs(genre.danceability - danceability);
+        const eError = Math.abs(genre.energy - energy);
+        const sError = Math.abs(genre.speechiness - speechiness);
+        const aError = Math.abs(genre.acousticness - acousticness);
+        const lError = Math.abs(genre.liveness - liveness);
+        const vError = Math.abs(genre.valence - valence);
+        const totalError = dError + eError + sError + aError + lError + vError;
+        if(totalError < closestGenreError){
+            closestGenreError = totalError;
+            closestGenre = genre;
+        }
+    })
+    console.log(closestGenre);
 }
 
 function getRadarPathCoordinates(data_point){

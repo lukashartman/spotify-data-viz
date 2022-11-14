@@ -1,4 +1,4 @@
-let rawSpotifyData = [];
+let rawDonutSpotifyData = [];
 
 let donutChartRatios = undefined;
 
@@ -18,11 +18,11 @@ document.addEventListener('DOMContentLoaded', function () {
     // This will load your two CSV files and store them into two arrays.
     Promise.all([d3.csv('data/songs_normalize.csv')])
         .then(function (values) {
-            rawSpotifyData = values[0];
+            rawDonutSpotifyData = values[0];
 
             let numOfSongsWithOneGenre = 0, numOfSongsWithTwoGenre = 0, numOfSongsWithThreeGenre = 0,
                 numOfSongsWithFourGenre = 0;
-            rawSpotifyData.forEach(song =>{
+            rawDonutSpotifyData.forEach(song =>{
                 let numOfCommas = (song['genre'].split(",").length - 1)
                 switch (numOfCommas){
                     case 0:
