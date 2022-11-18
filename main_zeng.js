@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
             spotify_data = spotify_data.filter(function(g){return ( g.genre != "set()")})
             console.log(spotify_data)
 
-            backgr()
+            // backgr()
             makeWaypoints()
          });
  });
@@ -180,11 +180,16 @@ var pack = d3.pack().size([width, height]).padding(120);
         count: +value
     }))
 
+    // console.log(ready_data)
+
     //change the data based on step
+
+    spotify_data = spotify_data.filter(function(g){return (parseInt(g.year) >= "2000" && parseInt(g.year) <= "2019")})
+
     if (step == 0){
-        ready_data = []
+        ready_data = ready_data.filter(function(g){return g.genre == "pop" || g.genre == "hiphop"})
     }else if(step == 1){
-        ready_data = ready_data.slice(0,2)
+        ready_data = ready_data.filter(function(g){return g.genre == "pop" || g.genre == "hiphop"})
     }else if(step == 2){
         ready_data = ready_data.slice(0,6)
     }else if(step == 3){
@@ -289,7 +294,7 @@ var pack = d3.pack().size([width, height]).padding(120);
 
     // add text
     svg.selectAll(".myText")
-    .data( pack(h).leaves(), function(d){ return d.data.genre; })
+    .data(pack(h).leaves(), function(d){ return d.data.genre; })
     .join(
         function (enter){
             return enter

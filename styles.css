@@ -4,7 +4,7 @@
 
 .split{
     width: 100%;
-    height: 400px;
+    height: 1200px;
     text-align: center;
     padding-top: 150px;
     display: inline-block;
@@ -20,9 +20,13 @@
 
 .grid {
     margin:auto;
-    width:80%;
+    margin-bottom: 200px;
+    width:100%;
     height: 3500px;
     padding:10px;
+    border:2px solid black;
+    /* background-color:#1DB954; */
+    /* background-image:url('assets/music2.jpg'); */
 }
 
 #genreInput button{
@@ -41,7 +45,9 @@ svg {
     background-color: white;
     padding:10px;
     margin: auto;
-    border:1px solid black
+    border:1px solid black;
+    opacity: 70%;
+    /* background-color: rgba(255,255,255,0); */
 
 }
 
@@ -60,4 +66,29 @@ svg {
     width:100%;
     height:100%;
     margin:auto;
+    border: 1px solid black;
+}
+
+.FirstIntro{
+    border: 1px solid black;
+    width: 600px;
+    height:200px;
+    margin:auto;
+    margin-top: 100px;
+    background-color: white;
+    opacity: 90%;
+}
+
+.Intro{
+    border: 1px solid black;
+    width: 600px;
+    height:100px;
+    margin:auto;
+    margin-top: 100px;
+    margin-bottom:50px;
+}
+
+.trigger{
+    text-align: center;
+   
 }
