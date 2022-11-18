@@ -33,9 +33,8 @@ document.addEventListener('DOMContentLoaded', function () {
             spotify_data = spotify_data.filter(function(g){return ( g.genre != "set()")})
             console.log(spotify_data)
 
+            backgr()
             makeWaypoints()
-            // drawStackChart(0)
-            // drawBubbleChart(1)
          });
  });
 
@@ -60,9 +59,7 @@ document.addEventListener('DOMContentLoaded', function () {
         handler: function(direction) {
             if(direction === 'down'){
                 drawBubbleChart(2) //Call the next step of the animation
-                // console.log("trigger2")
             } else {
-                // console.log("trigger out 2")
                 drawBubbleChart(1) //Call the undo step of the previous animation
             }
         },
@@ -163,6 +160,9 @@ var pack = d3.pack().size([width, height]).padding(120);
 
  function drawBubbleChart(step){
 
+    //the tooltip would stuck when cross step, so remove them before scroll to next step
+    d3.selectAll('.Bubbletooltip').remove();
+
     //count the occurence of each genre for bubble chart
     genre_map = {}
     spotify_data.forEach(function(d){
@@ -177,7 +177,7 @@ var pack = d3.pack().size([width, height]).padding(120);
     //map the object to chartable object
     var ready_data = Object.entries(genre_map).map(([key,value]) => ({
         genre:key,
-        count : +value
+        count: +value
     }))
 
     //change the data based on step
@@ -187,125 +187,173 @@ var pack = d3.pack().size([width, height]).padding(120);
         ready_data = ready_data.slice(0,2)
     }else if(step == 2){
         ready_data = ready_data.slice(0,6)
-    }
-    else if(step == 3){
+    }else if(step == 3){
         ready_data = ready_data.slice(0,9)
-    }
+    } 
     // console.log(ready_data)
 
     //set the color scale using schemeSet3 is an array with 9 color
-    const color = d3.scaleOrdinal(d3.schemeSet1)
+    // const color = d3.scaleOrdinal(d3.schemeSet1)
+    const color = d3.scaleOrdinal()
+    .domain(["pop", "hiphop", "rock","Dance/Electronic","Folk/Acoustic","R&B", 
+    "World/Traditional","blues","classical", "country", 
+     "easylistening", "jazz", "latin", "metal"])
+     .range(d3.schemeSet1)
+
 
     //scale size for each genre
     const size = d3.scaleLinear().domain([0, 80]).range([30,100])
 
-    //create a hidden div for tooltip
-    // var tooltip = d3.select("body").append("div")
-    // .attr("class", "tooltip")
-    // .style("opacity", 0)
-    // .style("background-color", "white")
-    // .style("border", "solid")
-    // .style("border-width", "2px")
-    // .style("border-radius", "5px")
-    // .style("padding", "5px")
-    // .style("width", "100px")
-    // .style("position", "absolute")
-
     // transition
     var t = d3.transition()
-    // .delay(200)
-    .duration(200);
+    .delay(500)
+    .duration(500);
 
     // hierarchy
     var h = d3.hierarchy({children: ready_data})
     .sum(function(d) { return d.count; })
 
-    //JOIN
-    var circle = svg.selectAll("circle")
-    .data(pack(h).leaves(), function(d){ return d.data.genre; })
 
-    var text = svg.selectAll("text")
-    .data(pack(h).leaves(), function(d){ return d.data.genre; });
+    //create a hidden div for tooltip
+    var Bubbletooltip = d3.select("body").append("div")
+    .attr("class", "Bubbletooltip")
+    .style("opacity", 0)
+    .style("background-color", "white")
+    .style("border", "solid")
+    .style("border-width", "2px")
+    .style("border-radius", "5px")
+    .style("padding", "5px")
+    .style("width", "140px")
+    .style("position", "absolute")
 
-    //EXIT
-    circle.exit()
-    .transition(t)
-    .style("opacity", 1e-6)
-    .style("r", 1e-6)
-    .remove();
+    svg.selectAll(".myBubble")
+    .data( pack(h).leaves(), function(d){ return d.data.genre; })
+    .join(
+        function (enter){
+            return enter
+            .append("circle")
+            .attr("r", 1e-6)
+            .attr("cx", function(d){ return d.x; })
+            .attr("cy", function(d){ return d.y; })
+            .style("fill", "white")
+            .transition()
+            // .delay(700)
+            .duration(500)
+            .style("fill", function(d,i){ return color(d.data.genre)})
+            .attr("r", function(d){ return size(d.r) })
 
-    text.exit()
-    .transition(t)
-    .style("opacity", 1e-6)
-    .remove();
+        },
 
-    //UPDATE
-    circle
-    .transition(t)
-    .style("fill", function(d,i){ return color(d.data.genre)})
-    .attr("r", function(d){ return size(d.r) })
-    .attr("cx", function(d){ return d.x; })
-    .attr("cy", function(d){ return d.y; })
+        function (update){
+            return update
+            .transition()
+            // .delay(200)
+            .duration(200)
+            // .transition(t)
+            .attr("r", function(d){ return size(d.r) })
+            .attr("cx", function(d){ return d.x; })
+            .attr("cy", function(d){ return d.y; })
+            .style("fill", function(d,i){ return color(d.data.genre)})
+        },
 
-    text
-    .transition(t)
-    .attr("x", function(d){ return d.x; })
-    .attr("y", function(d){ return d.y; })
-    .style("opacity", 1)
-    .attr('text-anchor', 'middle')
-    // .attr('alignment-baseline', 'middle')
-    .style("fill", "white")
-    .style("font-size", function(d){ 
-        word_size = (size(d.r)/2 > 15) ? 10: size(d.r)/2
-        return 30 + 'px'});
-    
+        function (exit){
+            return exit
+            .transition()
+            .duration(200)
+            .style("opacity", 1e-6)
+            .style("r", 1e-6)
+            .on('end', function(){
+                d3.select(this).remove()
+            });
+        },
+    )
+    .attr("class","myBubble")
+     .on("mouseover", function(event, d){ 
+        d3.select(this).transition().duration(300).attr("stroke", "black").attr("stroke-width", "4px");
+        
+        Bubbletooltip
+        .html('<u>' +(d.data.genre.charAt(0).toUpperCase() +  d.data.genre.slice(1)) + '</u>' + "<br>" + d.data.count)
+        .style("opacity", 1)
+     })
+    .on("mousemove", function(event,d){
+        Bubbletooltip
+        .style("left", (event.pageX)+20 + "px") //need to use pageX/Y to get the mouse position in the page, event.x will return the position in the div not the page
+        .style("top", (event.pageY )+10 + "px")
+    })
+    .on("mouseout", function(d) {
+        d3.select(this).transition().duration(300).attr("stroke", "black").attr("stroke-width", "0px");
+        Bubbletooltip
+        .style("opacity", 0);
+    })
 
-    //ENTER
-    circle.enter().append("circle")
-    .attr("r", 1e-6)
-    .attr("cx", function(d){ return d.x; })
-    .attr("cy", function(d){ return d.y; })
-    .style("fill", "#fff")
-    .transition(t)
-    .style("fill", function(d,i){ return color(d.data.genre)})
-    .attr("r", function(d){ return size(d.r) })
 
-    text.enter().append("text")
-    .style("opacity", 1e-6)
-    .attr("x", function(d){ return d.x; })
-    .attr("y", function(d){ return d.y; })
-    .text(function(d){ return d.data.count; })
-    .transition(t)
-    .attr('text-anchor', 'middle')
-    .attr('alignment-baseline', 'middle')
-    .style("opacity", 1)
-    .style("fill", "white")
-    .style("font-size", function(d){ 
-        word_size = (size(d.r)/2 > 15) ? 10: size(d.r)/2
-        return 30 + 'px'});
+    // add text
+    svg.selectAll(".myText")
+    .data( pack(h).leaves(), function(d){ return d.data.genre; })
+    .join(
+        function (enter){
+            return enter
+            .append("text")
+            .style("opacity", 1e-6)
+            .style("fill", "white")
+            .attr("x", function(d){ return d.x; })
+            .attr("y", function(d){ return d.y; })
+            .text(function(d){ return d.data.genre.charAt(0).toUpperCase() +  d.data.genre.slice(1) ; })
+            .style("font-size", function(d){ return size(d.r)/3 + 'px'})
+            .call(wrap,10)
+            .transition()
+            .duration(500)
+            .attr('text-anchor', 'middle')
+            .style("opacity", 1)
 
-    //tooltips
-    // circle
-    // .on("mouseover", function(event, d){ 
-    //     d3.select(this).transition().duration(300).attr("stroke", "black").attr("stroke-width", "4px");
+           
+        },
 
-    //     tooltip.transition()
-    //     .duration(200)
-    //     .style("opacity", 1)})
+        function (update){
 
-    // .on("mousemove", function(event,d){
-    //     console.log("hover")
-    //     tooltip
-    //     .html('<u>' + d.data.genre + '</u>' + "<br>" + d.data.count)
-    //     .style("left", (event.x +20) + "px") // x and y coordinates of the mouse
-    //     .style("top", (event.y -60) + "px")
-    //     .style("stroke", "black")
-    //     .style("stroke-width", 10);
-    // })
-    // .on("mouseleave", function(d) {
-    //     tooltip
-    //         .style("opacity", 0);
-    // })
+            return update
+            .style("opacity", 1e-6)
+            .attr("x", function(d){ return d.x; })
+            .attr("y", function(d){ return d.y; })
+            .text(function(d){ return d.data.genre.charAt(0).toUpperCase() +  d.data.genre.slice(1); })
+            .attr("font-size", function(d){  return size(d.r)/3 + "px"; })
+            .call(wrap,10)
+            .transition().duration(0)
+            .style("opacity", 1)
+            .attr('text-anchor', 'middle')
+        },
+
+        function (exit){
+            return exit
+            .transition()
+            .duration(200)
+            .style("opacity", 1e-6)
+            .on('end', function(){
+                d3.select(this).remove()
+            });
+        },
+    )
+    .attr("class","myText")
+    .on("mouseover", function(event, d){ 
+
+        d3.select(this).transition().duration(300).style("fill", "black");
+        Bubbletooltip
+        .html('<u>' + (d.data.genre.charAt(0).toUpperCase() +  d.data.genre.slice(1)) + '</u>' + "<br>" + d.data.count)
+        .style("opacity", 1)
+        // )
+     })
+    .on("mousemove", function(event,d){
+        // console.log("hover")
+        Bubbletooltip
+        .style("left", (event.pageX)+20 + "px") //need to use pageX/Y to get the mouse position in the page, event.x will return the position in the div not the page
+        .style("top", (event.pageY )+10 + "px")
+    })
+    .on("mouseout", function(d) {
+        d3.select(this).transition().duration(300).style("fill", "white")
+        Bubbletooltip
+        .style("opacity", 0);
+    })
+   
 
  }
 
@@ -313,7 +361,7 @@ var pack = d3.pack().size([width, height]).padding(120);
  // for stacked bar chart
  const svgg = d3.select('#stacked_svg').append('g').attr("transform", `translate(${margin.left}, ${margin.top})`)
 
-var x = d3.scaleTime().domain([new Date(2000,0,0), new Date(2019,0,0)]).range([0, innerWidth]);
+var x = d3.scaleTime().domain([new Date(1999,0,0), new Date(2020,0,0)]).range([0, innerWidth]);
 var x_axis = d3.axisBottom(x);
 
  var y = d3.scaleLinear().rangeRound([innerHeight, 0]);
@@ -322,9 +370,22 @@ var x_axis = d3.axisBottom(x);
 
  function drawStackChart(step){
 
-    var every_genre = ["DanceElectronic","FolkAcoustic","RAndB", 
+    //create a hidden div for tooltip
+    var Stacktooltip = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0)
+    .style("background-color", "white")
+    .style("border", "solid")
+    .style("border-width", "2px")
+    .style("border-radius", "5px")
+    .style("padding", "5px")
+    .style("width", "130px")
+    .style("position", "absolute")
+
+
+    var every_genre = [ "pop", "hiphop", "RAndB","DanceElectronic", "rock","FolkAcoustic", 
     "WorldTraditional","blues","classical", "country", 
-     "easylistening",  "hiphop",  "jazz", "latin", "metal", "pop", "rock"]
+     "easylistening", "jazz", "latin", "metal"]
    
    svgg.append("g")
    .attr("class", "x axis")
@@ -362,6 +423,11 @@ var x_axis = d3.axisBottom(x);
                 year_genre[d.year] = JSON.parse(JSON.stringify(all_genre))
             }
             genre =  genre_arr[i].replaceAll(/\s/g,'')
+            if(genre == "Dance/Electronic") genre = "DanceElectronic";
+            else if (genre == "R&B") genre = "RAndB";
+            else if (genre == "Folk/Acoustic") genre = "FolkAcoustic";
+            else if (genre == "World/Traditional") genre = "WorldTraditional"
+
             year_genre[d.year][genre] += 1
             year_genre[d.year]['sum'] += 1
             year_genre[d.year]['Year'] = d.year
@@ -372,96 +438,64 @@ var x_axis = d3.axisBottom(x);
     //map the object to the right format for stacked bar chart
     var ready_data = Object.entries(year_genre).map(([key,value]) => ({
         Year: key,
+        "hiphop":value["hiphop"],
+        "pop":value["pop"],
+        "rock":value["rock"],
+        "sum":value["sum"],
+        "Year": value["Year"],
         "DanceElectronic": value["DanceElectronic"],
         "FolkAcoustic": value["FolkAcoustic"],
         "RAndB": value["RAndB"],
+        "easylistening":value["easylistening"],
+        "jazz":value["jazz"],
+        "latin":value["latin"],
+        "metal":value["metal"],
         "WorldTraditional":value["WorldTraditional"],
         "blues":value["blues"],
         "classical":value["classical"],
         "country":value["country"],
-        "easylistening":value["easylistening"],
-        "hiphop":value["hiphop"],
-        "jazz":value["jazz"],
-        "latin":value["latin"],
-        "metal":value["metal"],
-        "pop":value["pop"],
-        "rock":value["rock"],
-        "sum":value["sum"],
-        "Year": value["Year"]
     }))
-    console.log(ready_data)
+    // console.log(ready_data)
 
     //update the dataset based on step of scroll
     var copy_data = structuredClone(ready_data);
-    if(step == 0){
-        for(let i =0; i < copy_data.length; i++){
-            copy_data[i]['pop'] = 0
-            copy_data[i]['rock'] = 0
-            copy_data[i]['RAndB']= 0
-            copy_data[i]['DanceElectronic'] = 0
-            copy_data[i]['FolkAcoustic'] = 0
-            copy_data[i]['WorldTraditional']= 0
-            copy_data[i]['blues'] = 0
-            copy_data[i]['classical'] = 0
-            copy_data[i]['country'] = 0
-            copy_data[i]['easylistening'] = 0
-            copy_data[i]['hiphop']= 0
-            copy_data[i]['jazz'] = 0
-            copy_data[i]['latin'] = 0
-            copy_data[i]['metal'] = 0
-        }
-    }else if (step == 1){
-        for(let i =0; i < copy_data.length; i++){
-            copy_data[i]['rock'] = 0
-            copy_data[i]['RAndB']= 0
-            copy_data[i]['DanceElectronic'] = 0
-            copy_data[i]['FolkAcoustic'] = 0
-            copy_data[i]['WorldTraditional']= 0
-            copy_data[i]['blues'] = 0
-            copy_data[i]['classical'] = 0
-            copy_data[i]['country'] = 0
-            copy_data[i]['easylistening'] = 0
-            copy_data[i]['hiphop']= 0
-            copy_data[i]['jazz'] = 0
-            copy_data[i]['latin'] = 0
-            copy_data[i]['metal'] = 0
-        }
-    }else if (step == 2){
-        for(let i =0; i < copy_data.length; i++){
-            copy_data[i]['RAndB']= 0
-            copy_data[i]['DanceElectronic'] = 0
-            copy_data[i]['FolkAcoustic'] = 0
-            copy_data[i]['WorldTraditional']= 0
-            copy_data[i]['blues'] = 0
-            copy_data[i]['classical'] = 0
-            copy_data[i]['country'] = 0
-            copy_data[i]['easylistening'] = 0
-            copy_data[i]['hiphop']= 0
-            copy_data[i]['jazz'] = 0
-            copy_data[i]['latin'] = 0
-            copy_data[i]['metal'] = 0
-        }
-    }else if (step == 3){
-        for(let i =0; i < copy_data.length; i++){
-            copy_data[i]['RAndB']= 0
-            copy_data[i]['DanceElectronic'] = 0
-            copy_data[i]['FolkAcoustic'] = 0
-            copy_data[i]['WorldTraditional']= 0
-            copy_data[i]['blues'] = 0
-            copy_data[i]['classical'] = 0
-            copy_data[i]['country'] = 0
-            copy_data[i]['easylistening'] = 0
-            copy_data[i]['jazz'] = 0
-            copy_data[i]['latin'] = 0
-            copy_data[i]['metal'] = 0
-        }
+    for(let i =0; i < copy_data.length; i++){
+        copy_data[i]['pop'] = 0
+        copy_data[i]['rock'] = 0
+        copy_data[i]['RAndB']= 0
+        copy_data[i]['DanceElectronic'] = 0
+        copy_data[i]['FolkAcoustic'] = 0
+        copy_data[i]['WorldTraditional']= 0
+        copy_data[i]['blues'] = 0
+        copy_data[i]['classical'] = 0
+        copy_data[i]['country'] = 0
+        copy_data[i]['easylistening'] = 0
+        copy_data[i]['hiphop']= 0
+        copy_data[i]['jazz'] = 0
+        copy_data[i]['latin'] = 0
+        copy_data[i]['metal'] = 0
     }
 
-    
-
-     // color palette
-    // const color = d3.scaleOrdinal()
-    // .range(['#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33','#a65628','#f781bf','#999999'])
+    //only add the value back to the genre that we want to display 
+    if(step == 1){
+        copy_data = copy_data.map((obj, i) => ({ ...obj, "pop": ready_data[i]['pop'] }));
+    }else if (step == 2){
+        copy_data = copy_data.map((obj, i) => ({ ...obj,
+            "pop": ready_data[i]['pop'],
+            "hiphop": ready_data[i]['hiphop'],
+            "RAndB": ready_data[i]['RAndB'],
+        }));
+    }else if (step == 3){
+        copy_data = copy_data.map((obj, i) => ({ ...obj,
+            "pop": ready_data[i]['pop'],
+            "hiphop": ready_data[i]['hiphop'],
+            "RAndB": ready_data[i]['RAndB'],
+            "DanceElectronic": ready_data[i]['DanceElectronic'],
+            "rock": ready_data[i]['rock'],
+        }));
+    }else if (step == 4){
+        copy_data = ready_data
+    }
 
     const color = d3.scaleOrdinal(d3.schemeSet2)
 
@@ -471,35 +505,53 @@ var x_axis = d3.axisBottom(x);
     .offset(d3.stackOffsetNone);
 
      // update the y scale
-     y.domain([0, 190]);
+     y.domain([0, 230]);
 
      svgg.select(".y")
      .transition()
     .call(customYAxis);
 
     every_genre.forEach(function(key, key_index){
-    // console.log(key)
 
-    var bar = svgg.selectAll(".bar-" + key)
-    .data(stack(copy_data)[key_index], function(d){ return d.data["Year"] + "-" + key; });
+        var bar = svgg.selectAll(".bar-" + key)
+        .data(stack(copy_data)[key_index], function(d){ return d.data["Year"] + "-" + key; });
 
-    bar
+        bar
         .transition()
         .duration(500)
         .attr("x", function(d){ return x(new Date(d.data["Year"]),0,0); })
         .attr("y", function(d){ return y(d[1]); })
         .attr("height", function(d){ return y(d[0]) - y(d[1]); });
 
-    bar.enter().append("rect")
+        bar
+        .enter().append("rect")
         .attr("class", function(d){ return "bar bar-" + key; })
         .attr("x", function(d){ return x(new Date(d.data["Year"]),0,0); })
         .attr("y", function(d){ return y(d[1]); })
         .attr("height", function(d){ return y(d[0]) - y(d[1]); })
-        .attr("width", 20)
+        .attr("width", 30)
         .attr("fill", function(d){ return color(key); })
+        .attr("transform", "translate(-15,0)" )
+        .on("mouseover", function(event, d){ 
+ 
+            d3.select(this).transition().duration(300).attr("stroke", "black").attr("stroke-width", "4px");
+            Stacktooltip
+            .html('<u>' + key.charAt(0).toUpperCase() +  key.slice(1)  + '</u>' + "<br>" + (d[1]-d[0]) + "<br>" + d.data["Year"])
+            .style("opacity", 1)
 
+         })
+        .on("mousemove", function(event,d){
+            Stacktooltip
+            .style("left", (event.pageX)+20 + "px") //need to use pageX/Y to get the mouse position in the page, event.x will return the position in the div not the page
+            .style("top", (event.pageY )+10 + "px")
+        })
+        .on("mouseout", function(d) {
+            d3.select(this).transition().duration(300).attr("stroke", "black").attr("stroke-width", "0px");
+            Stacktooltip
+            .style("opacity", 0);
+        })
 
-      });  
+    });  
  }
 
 
@@ -508,3 +560,52 @@ var x_axis = d3.axisBottom(x);
     g.selectAll(".tick:not(:first-of-type) line").attr("stroke", "#777").attr("stroke-dasharray", "2,2");
     g.selectAll(".tick text").attr("x", 4).attr("dy", -4);
   }
+
+  function wrap(text, width) {
+    text.each(function () {
+        var text = d3.select(this),
+            words = text.text().split("/").reverse(),
+            word,
+            line = [],
+            lineNumber = -0.8,
+            lineHeight = 0.9, // ems
+            x = text.attr("x"),
+            y = text.attr("y"),
+            dy = 0, //parseFloat(text.attr("dy")),
+            // dy = text.attr("dy") ? text.attr("dy") : 0;
+            tspan = text.text(null)
+                        .append("tspan")
+                        .attr("class", "tspan")
+                        .attr("x", x)
+                        .attr("y", y)
+                        .attr("dy", dy + "em");
+        while (word = words.pop()) {
+            line.push(word);
+            tspan.text(line.join(" "));
+            if (tspan.node().getComputedTextLength() > width) {
+                line.pop();
+                tspan.text(line.join(" "));
+                line = [word];
+                tspan = text.append("tspan")
+                            .attr("x", x)
+                            .attr("y", y)
+                            .attr("dy", ++lineNumber * lineHeight + dy + "em")
+                            .text(word);
+            }
+        }
+    });
+}
+
+function backgr(){
+
+    $(window).on("load resize scroll", function() {
+        $(".bg-static").each(function() {
+          var windowTop = $(window).scrollTop();
+          var elementTop = $(this).offset().top;
+          var leftPosition = windowTop - elementTop;
+            $(this)
+              .find(".bg-move")
+              .css({ left: leftPosition });
+        });
+      });
+}
