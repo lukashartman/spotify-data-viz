@@ -1,16 +1,16 @@
 let rawDonutSpotifyData = [];
 
 let donutChartRatios = undefined;
+let donutTooltip = undefined;
 
 const donutDimension = d3.select('svg');
 const donutSvgWidth = +donutDimension.style('width').replace('px','');
 const donutSvgHeight = +donutDimension.style('height').replace('px','');
 
-const donutMargin = { top:50, bottom: 50, right: 50, left: 50 };
-const donutInnerWidth = donutSvgWidth - donutMargin.left - donutMargin.right;
-const donutInnerHeight = donutSvgHeight - donutMargin.top - donutMargin.bottom;
-
 const animationSpeed = 500;
+
+const color = d3.scaleOrdinal()
+    .range([ '#ff0000', '#005a00', '#0000ff', '#b37400'])
 
 // This function is called once the HTML page is fully loaded by the browser
 document.addEventListener('DOMContentLoaded', function () {
@@ -54,6 +54,8 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function makeDonutWaypoints(){
+
+
     new Waypoint({
         element: document.getElementById('donutChartStep1'),
         handler: function(direction) {
@@ -123,21 +125,44 @@ function makeDonutWaypoints(){
 }
 
 function step1Down(){
-    let svg = d3.select("#donutChartSvg").html("");
+    donutTooltip = d3.select("body").append("div")
+        .attr("class", "donutTooltip")
+        .style("opacity", 0)
+        .style("background-color", "white")
+        .style("border", "solid")
+        .style("border-width", "2px")
+        .style("border-radius", "5px")
+        .style("padding", "5px")
+        .style("width", "140px")
+        .style("position", "absolute");
 
-    const color = d3.scaleOrdinal()
-        .range(d3.schemeSet3)
+    let svg = d3.select("#donutChartSvg").html("");
 
     const pie = d3.pie().value(function(d) {return d[1]});
 
     let paths = svg
         .append('g')
-        .attr('transform', 'translate(' + donutInnerWidth/2 +  ',' + donutInnerHeight/2 +')')
+        .attr('transform', 'translate(' + donutSvgWidth/2 +  ',' + donutSvgHeight/2 +')')
         .selectAll('path')
         .data(pie(Object.entries(donutChartRatios)))
         .enter()
         .append("path")
         .attr('fill', (d) => color(d.value))
+        .on("mouseover", function(event, d){
+            d3.select(this).transition().duration(300).attr("stroke", "black").attr("stroke-width", "4px");
+            donutTooltip.html('<strong>721 songs</strong> fall under only 1 genre')
+                .style("opacity", 1)
+        })
+        .on("mousemove", function(event,d){
+            donutTooltip
+                .style("left", (event.pageX)+20 + "px")
+                .style("top", (event.pageY )+10 + "px")
+        })
+        .on("mouseout", function(d) {
+            d3.select(this).transition().duration(300).attr("stroke", "black").attr("stroke-width", "0px");
+            donutTooltip.style("opacity", 0);
+        })
+
 
     let angleInterpolation = d3.interpolate(0, 2.7);
 
@@ -165,19 +190,17 @@ function step1Down(){
 function step2Down(){
     let svg = d3.select("#donutChartSvg").html("");
 
-    const color = d3.scaleOrdinal()
-        .range(d3.schemeSet3)
-
     const pie = d3.pie().value(function(d) {return d[1]});
 
     let paths = svg
         .append('g')
-        .attr('transform', 'translate(' + donutInnerWidth/2 +  ',' + donutInnerHeight/2 +')')
+        .attr('transform', 'translate(' + donutSvgWidth/2 +  ',' + donutSvgHeight/2 +')')
         .selectAll('path')
         .data(pie(Object.entries(donutChartRatios)))
         .enter()
         .append("path")
         .attr('fill', (d) => color(d.value))
+
 
 
     let angleInterpolation = d3.interpolate(2.7, 4.973);
@@ -206,14 +229,11 @@ function step2Down(){
 function step3Down(){
     let svg = d3.select("#donutChartSvg").html("");
 
-    const color = d3.scaleOrdinal()
-        .range(d3.schemeSet3)
-
     const pie = d3.pie().value(function(d) {return d[1]});
 
     let paths = svg
         .append('g')
-        .attr('transform', 'translate(' + donutInnerWidth/2 +  ',' + donutInnerHeight/2 +')')
+        .attr('transform', 'translate(' + donutSvgWidth/2 +  ',' + donutSvgHeight/2 +')')
         .selectAll('path')
         .data(pie(Object.entries(donutChartRatios)))
         .enter()
@@ -246,14 +266,11 @@ function step3Down(){
 function step4Down(){
     let svg = d3.select("#donutChartSvg").html("");
 
-    const color = d3.scaleOrdinal()
-        .range(d3.schemeSet3)
-
     const pie = d3.pie().value(function(d) {return d[1]});
 
     let paths = svg
         .append('g')
-        .attr('transform', 'translate(' + donutInnerWidth/2 +  ',' + donutInnerHeight/2 +')')
+        .attr('transform', 'translate(' + donutSvgWidth/2 +  ',' + donutSvgHeight/2 +')')
         .selectAll('path')
         .data(pie(Object.entries(donutChartRatios)))
         .enter()
@@ -286,14 +303,11 @@ function step4Down(){
 function step1Up(){
     let svg = d3.select("#donutChartSvg").html("");
 
-    const color = d3.scaleOrdinal()
-        .range(d3.schemeSet3)
-
     const pie = d3.pie().value(function(d) {return d[1]});
 
     let paths = svg
         .append('g')
-        .attr('transform', 'translate(' + donutInnerWidth/2 +  ',' + donutInnerHeight/2 +')')
+        .attr('transform', 'translate(' + donutSvgWidth/2 +  ',' + donutSvgHeight/2 +')')
         .selectAll('path')
         .data(pie(Object.entries(donutChartRatios)))
         .enter()
@@ -327,14 +341,11 @@ function step1Up(){
 function step2Up(){
     let svg = d3.select("#donutChartSvg").html("");
 
-    const color = d3.scaleOrdinal()
-        .range(d3.schemeSet3)
-
     const pie = d3.pie().value(function(d) {return d[1]});
 
     let paths = svg
         .append('g')
-        .attr('transform', 'translate(' + donutInnerWidth/2 +  ',' + donutInnerHeight/2 +')')
+        .attr('transform', 'translate(' + donutSvgWidth/2 +  ',' + donutSvgHeight/2 +')')
         .selectAll('path')
         .data(pie(Object.entries(donutChartRatios)))
         .enter()
@@ -368,14 +379,11 @@ function step2Up(){
 function step3Up(){
     let svg = d3.select("#donutChartSvg").html("");
 
-    const color = d3.scaleOrdinal()
-        .range(d3.schemeSet3)
-
     const pie = d3.pie().value(function(d) {return d[1]});
 
     let paths = svg
         .append('g')
-        .attr('transform', 'translate(' + donutInnerWidth/2 +  ',' + donutInnerHeight/2 +')')
+        .attr('transform', 'translate(' + donutSvgWidth/2 +  ',' + donutSvgHeight/2 +')')
         .selectAll('path')
         .data(pie(Object.entries(donutChartRatios)))
         .enter()
@@ -408,14 +416,11 @@ function step3Up(){
 function step4Up(){
     let svg = d3.select("#donutChartSvg").html("");
 
-    const color = d3.scaleOrdinal()
-        .range(d3.schemeSet3)
-
     const pie = d3.pie().value(function(d) {return d[1]});
 
     let paths = svg
         .append('g')
-        .attr('transform', 'translate(' + donutInnerWidth/2 +  ',' + donutInnerHeight/2 +')')
+        .attr('transform', 'translate(' + donutSvgWidth/2 +  ',' + donutSvgHeight/2 +')')
         .selectAll('path')
         .data(pie(Object.entries(donutChartRatios)))
         .enter()

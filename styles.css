@@ -1,32 +1,57 @@
+@font-face{
+    font-family: SpotifyBold;
+    src: url("assets/fonts/CircularStd-Black.otf") format("opentype");
+}
+
+@font-face{
+    font-family: SpotifyBook;
+    src: url("assets/fonts/CircularStd-Book.otf") format("opentype");
+}
+
+body {
+    background-color: white;
+}
+
+h1{ font-family: SpotifyBold; }
+
+h2{ font-family: SpotifyBold;}
+
+text { font-family: SpotifyBook; }
+
+* { font-family: SpotifyBook;}
+
 .myContainer {
     margin:auto;
 }
 
-.split{
+.websiteOpening{
+    border-radius: 10px;
     width: 100%;
-    height: 1200px;
+    height: 90%;
     text-align: center;
     padding-top: 150px;
+    padding-bottom: 150px;
     display: inline-block;
-    background-image: url("assets/mosaicBlurred.png");
+    background-image:
+            linear-gradient(to bottom, rgba(30, 215, 96, 0.30), rgba(30, 215, 96, 0.80)),
+            url("assets/mosaicBlurred.png");
 }
 
-.split h1{
-    margin-left: 30%;
-    margin-right: 30%;
+.websiteOpening h1{
+    margin-left: 20%;
+    margin-right: 20%;
+    line-height: 1.5em;
     padding: 10px;
     background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    font-size: 80px;
 }
 
 .grid {
-    margin:auto;
-    margin-bottom: 200px;
-    width:100%;
+    margin: auto auto 200px;
+    width:80%;
     height: 3500px;
     padding:10px;
-    border:2px solid black;
-    /* background-color:#1DB954; */
-    /* background-image:url('assets/music2.jpg'); */
 }
 
 #genreInput button{
@@ -39,16 +64,25 @@ svg {
     height: 100%;
     background-color: white;
     border-radius: 3px;
+
 }
 
 .col{
-    background-color: white;
+    position: relative;
     padding:10px;
     margin: auto;
-    border:1px solid black;
-    opacity: 70%;
-    /* background-color: rgba(255,255,255,0); */
+    border: 1px;
+    border-radius: 10px;
+    background-color: black;
+    color: white;
+}
 
+.col img{
+    position: absolute;
+    left: -30px;
+    top: -30px;
+    transform: rotate(-20deg);
+    width: 50px;
 }
 
 .sticky {
@@ -66,29 +100,34 @@ svg {
     width:100%;
     height:100%;
     margin:auto;
-    border: 1px solid black;
+    background-color: white;
 }
 
 .FirstIntro{
-    border: 1px solid black;
     width: 600px;
-    height:200px;
-    margin:auto;
-    margin-top: 100px;
+    height: 260px;
+    margin: 100px auto auto;
+    padding: 10px;
     background-color: white;
     opacity: 90%;
+    border-radius: 10px;
 }
 
 .Intro{
-    border: 1px solid black;
+    width: 100%;
+    height: 300px;
+    background-color: black;
+    text-align: center;
+    flex-wrap: wrap;
+    display: flex;
+}
+
+.Intro h2{
+    margin: auto;
     width: 600px;
-    height:100px;
-    margin:auto;
-    margin-top: 100px;
-    margin-bottom:50px;
+    color: white;
 }
 
 .trigger{
     text-align: center;
-   
 }

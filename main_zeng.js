@@ -40,6 +40,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
  
  function makeWaypoints(){
+     var Stacktooltip = d3.select("body").append("div")
+         .attr("class", "StackedChartTooltip")
+         .style("opacity", 0)
+         .style("background-color", "white")
+         .style("border", "solid")
+         .style("border-width", "2px")
+         .style("border-radius", "5px")
+         .style("padding", "5px")
+         .style("width", "130px")
+         .style("position", "absolute")
+
     new Waypoint({
         element: document.getElementById('BubbleChartStep1'), //Select the trigger element for the correct step
         handler: function(direction) {
@@ -203,7 +214,9 @@ var pack = d3.pack().size([width, height]).padding(120);
     .domain(["pop", "hiphop", "rock","Dance/Electronic","Folk/Acoustic","R&B", 
     "World/Traditional","blues","classical", "country", 
      "easylistening", "jazz", "latin", "metal"])
-     .range(d3.schemeSet1)
+     .range(["#005a00","#008000", "#b30000", "#ff8080","#bfcfff","#ff0000",
+     "#ffc14d", "#ffa500", "#ffe7be", "#002db3", "#ffdb99", "#b37400",
+     "#0000ff", "#ffbfbf"])
 
 
     //scale size for each genre
@@ -370,14 +383,14 @@ var x = d3.scaleTime().domain([new Date(1999,0,0), new Date(2020,0,0)]).range([0
 var x_axis = d3.axisBottom(x);
 
  var y = d3.scaleLinear().rangeRound([innerHeight, 0]);
- var y_axis = d3.axisRight(y).tickSize(innerWidth).tickFormat(function(d, i, ticks){ return i == ticks.length - 1 ? d + " value" : d; });
+ var y_axis = d3.axisRight(y).tickSize(innerWidth).tickFormat(function(d, i, ticks){ return i == ticks.length - 1 ? d + "" : d; });
  svgg.append("g").attr("class", "y axis").call(customYAxis)
 
  function drawStackChart(step){
 
     //create a hidden div for tooltip
     var Stacktooltip = d3.select("body").append("div")
-    .attr("class", "tooltip")
+    .attr("class", "StackedChartTooltip")
     .style("opacity", 0)
     .style("background-color", "white")
     .style("border", "solid")
@@ -483,7 +496,11 @@ var x_axis = d3.axisBottom(x);
 
     //only add the value back to the genre that we want to display 
     if(step == 1){
-        copy_data = copy_data.map((obj, i) => ({ ...obj, "pop": ready_data[i]['pop'] }));
+        copy_data = copy_data.map((obj, i) => ({ ...obj,
+            "pop": ready_data[i]['pop'],
+            "hiphop": ready_data[i]['hiphop'],
+
+        }));
     }else if (step == 2){
         copy_data = copy_data.map((obj, i) => ({ ...obj,
             "pop": ready_data[i]['pop'],
@@ -502,7 +519,15 @@ var x_axis = d3.axisBottom(x);
         copy_data = ready_data
     }
 
-    const color = d3.scaleOrdinal(d3.schemeSet2)
+    // const color = d3.scaleOrdinal(d3.schemeSet2)
+
+     const color = d3.scaleOrdinal()
+         .domain(["pop", "hiphop", "rock","DanceElectronic","FolkAcoustic","RAndB",
+             "WorldTraditional","blues","classical", "country",
+             "easylistening", "jazz", "latin", "metal"])
+         .range(["#005a00","#008000", "#b30000", "#ff8080","#bfcfff","#ff0000",
+             "#ffc14d", "#ffa500", "#ffe7be", "#002db3", "#ffdb99", "#b37400",
+             "#0000ff", "#ffbfbf"])
 
     var stack = d3.stack()
     .keys(every_genre)
@@ -534,7 +559,7 @@ var x_axis = d3.axisBottom(x);
         .attr("x", function(d){ return x(new Date(d.data["Year"]),0,0); })
         .attr("y", function(d){ return y(d[1]); })
         .attr("height", function(d){ return y(d[0]) - y(d[1]); })
-        .attr("width", 30)
+        .attr("width", 20)
         .attr("fill", function(d){ return color(key); })
         .attr("transform", "translate(-15,0)" )
         .on("mouseover", function(event, d){ 
