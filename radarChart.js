@@ -340,7 +340,7 @@ function computeClosestMatch(danceability, energy, speechiness, acousticness, li
     })
     console.log(closestGenre);
 
-    d3.select("#closestGenre").html('Your closest <span style="color: #005a00" >genre</span>: ' + closestGenre.genre);
+    d3.select("#closestGenre").html('Your closest <span style="color: rgba(30, 215, 96, 1)" >genre</span>: ' + closestGenre.genre);
     d3.select("#closestSong").html('Your closest <span style="color: #b30000">song</span>: ' + closestSong.song + ' by ' + closestSong.artist);
     d3.select("#goToSpotifyButton")
         .classed('hidden', false)
