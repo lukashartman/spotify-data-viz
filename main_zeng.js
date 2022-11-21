@@ -290,7 +290,7 @@ var pack = d3.pack().size([width, height]).padding(120);
         d3.select(this).transition().duration(300).attr("stroke", "black").attr("stroke-width", "4px");
         
         Bubbletooltip
-        .html('<u>' +(d.data.genre.charAt(0).toUpperCase() +  d.data.genre.slice(1)) + '</u>' + "<br>" + d.data.count)
+        .html('<u>' +(d.data.genre.charAt(0).toUpperCase() +  d.data.genre.slice(1)) + '</u>' + "<br>" + "Count: " + d.data.count)
         .style("opacity", 1)
      })
     .on("mousemove", function(event,d){
@@ -356,7 +356,7 @@ var pack = d3.pack().size([width, height]).padding(120);
 
         d3.select(this).transition().duration(300).style("fill", "black");
         Bubbletooltip
-        .html('<u>' + (d.data.genre.charAt(0).toUpperCase() +  d.data.genre.slice(1)) + '</u>' + "<br>" + d.data.count)
+        .html('<u>' + (d.data.genre.charAt(0).toUpperCase() +  d.data.genre.slice(1)) + '</u>' + "<br>" + "Count: " + d.data.count)
         .style("opacity", 1)
         // )
      })
@@ -564,9 +564,9 @@ var x_axis = d3.axisBottom(x);
         .attr("transform", "translate(-15,0)" )
         .on("mouseover", function(event, d){ 
  
-            d3.select(this).transition().duration(300).attr("stroke", "black").attr("stroke-width", "4px");
+            d3.select(this).transition().duration(300).attr("stroke", "black").attr("stroke-width", "3px");
             Stacktooltip
-            .html('<u>' + key.charAt(0).toUpperCase() +  key.slice(1)  + '</u>' + "<br>" + (d[1]-d[0]) + "<br>" + d.data["Year"])
+            .html('<u>' + key.charAt(0).toUpperCase() +  key.slice(1)  + '</u>' + "<br>"  + "Year: "+d.data["Year"] +"<br>" +  "Count: " + (d[1]-d[0]))
             .style("opacity", 1)
 
          })
