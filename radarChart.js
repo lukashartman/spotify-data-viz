@@ -10,6 +10,9 @@ const radarSvgHeight = +radarDimension.style('height').replace('px','');
 let genreAttributes = {genre: undefined, danceability: 0.0, energy: 0.0, speechiness: 0.0,
     acousticness: 0.0, liveness: 0.0, valence: 0.0};
 let genres = [];
+let currentGenres = [];
+let closestMatch = [];
+let firstScroll = true;
 
 let radarAnimationSpeed = 800;
 let rawSpotifyData = undefined;
@@ -54,7 +57,7 @@ function makeRadarWaypoints(){
     new Waypoint({
         element: document.getElementById('radarChartStep1'),
         handler: function(direction) {
-            if(direction === 'down'){
+            if(direction === 'down' && firstScroll){
                 radarChartStep1();
             } else {
 
@@ -62,9 +65,34 @@ function makeRadarWaypoints(){
         },
         offset: '50%'
     });
+
+    new Waypoint({
+        element: document.getElementById('radarChartStep4'),
+        handler: function(direction) {
+            if(direction === 'down'){
+                topGenreComparison();
+            } else {
+
+            }
+        },
+        offset: '50%'
+    });
+
+    new Waypoint({
+        element: document.getElementById('radarChartStep6'),
+        handler: function(direction) {
+            if(direction === 'down'){
+                drawCustomGenre();
+            } else {
+                topGenreComparison();
+            }
+        },
+        offset: '50%'
+    });
 }
 
 function radarChartStep1(){
+    firstScroll = false;
     radarSvg = d3.select("#radarChartSvg")
     radarRadialScale = d3.scaleLinear()
         .domain([0,1])
@@ -125,30 +153,34 @@ function radarChartStep1(){
     }
 }
 
-function updateRadarChart(genre){
+function topGenreComparison(){
     let line = d3.line()
         .x(d => d.x)
         .y(d => d.y);
 
-    let currentGenre = genres.filter(d => d.genre === genre)
-    console.log(currentGenre);
+    currentGenres[0] = genres.filter(d => d.genre === 'pop');
+    currentGenres[1] = genres.filter(d => d.genre === 'hip hop');
+
+    const color = d3.scaleOrdinal()
+        .domain([currentGenres[0], currentGenres[1], currentGenres[2]])
+        .range(["#005a00","#b30000", "#0000ff"])
 
     radarSvg.selectAll('.paths')
-        .data(currentGenre)
+        .data(currentGenres, d => d.genre)
         .join(
             enter => enter.append('path')
                 .transition()
                 .duration(radarAnimationSpeed)
-                .attr("d",(d) => {return line(getRadarPathCoordinates(d));})
+                .attr("d",(d) => {return line(getRadarPathCoordinates(d[0]));})
                 .attr("stroke-width", 3)
-                .attr("stroke", 'lightgreen')
-                .attr("fill", 'lightgreen')
+                .attr("stroke", color.genre)
+                .attr("fill", color)
                 .attr("stroke-opacity", 1)
                 .attr("opacity", 0.5),
             update => update
                 .transition()
                 .duration(radarAnimationSpeed)
-                .attr("d",(d) => {return line(getRadarPathCoordinates(d));})
+                .attr("d",(d) => {return line(getRadarPathCoordinates(d[0]));})
                 .style('opacity', 0.5),
             exit => exit
                 .transition()
@@ -159,24 +191,64 @@ function updateRadarChart(genre){
         .classed('paths', true) //Used to change hover opacity
 }
 
-function drawCustomGenre(danceability, energy, speechiness, acousticness, liveness, valence){
+function drawGenre(genre){
     let line = d3.line()
         .x(d => d.x)
         .y(d => d.y);
 
-    let customGenre =  [{genre: 'custom', danceability: +danceability, energy: +energy, speechiness: +speechiness,
-        acousticness: +acousticness, liveness: +liveness, valence: +valence}];
+    const color = d3.scaleOrdinal()
+        .range(["#0000ff"])
 
-    radarSvg.selectAll('.customPath')
-        .data(customGenre)
+    currentGenres[2] = genres.filter(d => d.genre === genre);
+
+    radarSvg.selectAll('.paths')
+        .data(currentGenres, currentGenres.genre)
+        .join(
+            enter => enter.append('path')
+                .transition()
+                .duration(radarAnimationSpeed)
+                .attr("d",(d) => {return line(getRadarPathCoordinates(d[0]));})
+                .attr("stroke-width", 3)
+                .attr("stroke", color)
+                .attr("fill", color)
+                .attr("stroke-opacity", 1)
+                .attr("opacity", 0.5),
+            update => update
+                .transition()
+                .duration(radarAnimationSpeed)
+                .attr("d",(d) => {return line(getRadarPathCoordinates(d[0]));})
+                .style('opacity', 0.5),
+            exit => exit
+                .transition()
+                .duration(radarAnimationSpeed)
+                .style('opacity', 0)
+                .remove() //Transition the element and then remove
+        )
+        .classed('paths', true) //Used to change hover opacity
+}
+
+function drawClosest(genre, song){
+    let line = d3.line()
+        .x(d => d.x)
+        .y(d => d.y);
+
+    closestMatch[1] = genre;
+    closestMatch[2] = song;
+
+    const color = d3.scaleOrdinal()
+        .domain([closestMatch[0], genre, song])
+        .range(["#ec7500","#005a00","#b30000"])
+
+    radarSvg.selectAll('.paths')
+        .data(closestMatch, d => d.genre)
         .join(
             enter => enter.append('path')
                 .transition()
                 .duration(radarAnimationSpeed)
                 .attr("d",(d) => {return line(getRadarPathCoordinates(d));})
                 .attr("stroke-width", 3)
-                .attr("stroke", 'orange')
-                .attr("fill", 'orange')
+                .attr("stroke", color)
+                .attr("fill", color)
                 .attr("stroke-opacity", 1)
                 .attr("opacity", 0.5),
             update => update
@@ -190,7 +262,46 @@ function drawCustomGenre(danceability, energy, speechiness, acousticness, livene
                 .style('opacity', 0)
                 .remove() //Transition the element and then remove
         )
-        .classed('customPath', true) //Used to change hover opacity
+        .classed('paths', true) //Used to change hover opacity
+}
+
+function drawCustomGenre(danceability, energy, speechiness, acousticness, liveness, valence){
+    let line = d3.line()
+        .x(d => d.x)
+        .y(d => d.y);
+
+    if(!isNaN(danceability))
+        closestMatch[0] =  {genre: 'custom', danceability: +danceability, energy: +energy, speechiness: +speechiness,
+            acousticness: +acousticness, liveness: +liveness, valence: +valence};
+
+    const color = d3.scaleOrdinal()
+        .domain([closestMatch[0], closestMatch[1], closestMatch[2]])
+        .range(["#ec7500","#005a00","#b30000"])
+
+    radarSvg.selectAll('.paths')
+        .data(closestMatch, d => d.genre)
+        .join(
+            enter => enter.append('path')
+                .transition()
+                .duration(radarAnimationSpeed)
+                .attr("d",(d) => {return line(getRadarPathCoordinates(d));})
+                .attr("stroke-width", 3)
+                .attr("stroke", color)
+                .attr("fill", color)
+                .attr("stroke-opacity", 1)
+                .attr("opacity", 0.5),
+            update => update
+                .transition()
+                .duration(300)
+                .attr("d",(d) => {return line(getRadarPathCoordinates(d));})
+                .style('opacity', 0.5),
+            exit => exit
+                .transition()
+                .duration(100)
+                .style('opacity', 0)
+                .remove() //Transition the element and then remove
+        )
+        .classed('paths', true) //Used to change hover opacity
 }
 
 function computeClosestMatch(danceability, energy, speechiness, acousticness, liveness, valence){
@@ -228,6 +339,12 @@ function computeClosestMatch(danceability, energy, speechiness, acousticness, li
         }
     })
     console.log(closestGenre);
+
+    d3.select("#closestGenre").html('Your closest <span style="color: #005a00" >genre </span>: ' + closestGenre.genre);
+    d3.select("#closestSong").html('Your closest <span style="color: #b30000">song </span>: ' + closestSong.song + ' by ' + closestSong.artist);
+
+    drawClosest(closestGenre, closestSong);
+    document.getElementById('radarChartStep7').scrollIntoView(false);
 }
 
 function getRadarPathCoordinates(data_point){

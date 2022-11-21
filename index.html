@@ -15,15 +15,14 @@
 
             <div class="websiteOpening">
 
-                <h1>Do all
+                <h1>The reason all
                 <img width="300px" src="assets/spotifyLogo.png">
-                top songs sound the same?</h1>
+                top songs sound the same.</h1>
 
                 <div class ="FirstIntro">
                     <h5>From 2000 to 2019, Spotify has kept detailed records of its most popular songs. By analyzing
-                    the attributes of these songs, we aim to discover whether these top songs are beginning to
-                    all sound the same, or whether our changes in culture and society have been reflected in the
-                    songs we choose to listen to.</h5><br>
+                    the attributes of these songs, we aim to discover why these top songs are beginning to
+                    all sound the same, and whether there's any chance of a new type of song taking the crown.</h5><br>
                     <strong>By:</strong>
                     <h6>Zeng Keat Giam | zgiam@asu.edu<br>
                         Luke Hartman | lmhartm2@asu.edu</h6>
@@ -32,7 +31,7 @@
 
 
             <div class ="Intro">
-                <h2>All songs are tagged with a genre. Are some genres more popular than others? By how much?</h2>
+                <h2>All songs are tagged with a genre. Most of Spotify's top songs fit within two genres.</h2>
             </div>
 
             <div class = "grid">
@@ -79,8 +78,8 @@
             </div>
 
             <div class ="Intro">
-                <h2>Pop might be the most common genre, but has that always been the case? Or was some other genre
-                most popular at some point in time?</h2>
+                <h2>Pop might be the most <em>common</em> genre, but let's see if that's always been the case and
+                whether any other genres are up-and-coming.</h2>
             </div>
 
             <div class = "grid">
@@ -91,7 +90,10 @@
                             <div class = "col" >
                                 <img src="assets/musicNote.png">
                                 <h4 class="trigger" id="StackedChartStep1">Pop and HipHop have dominated the charts
-                                from the very beginning.</h4>
+                                from the very beginning.<br><br>
+                                    <em><h6>Hint: Hover over the chart to see the number of songs with that genre for each year</h6></em>
+                                </h4>
+
                             </div>
 
                             <div class = "col" >
@@ -103,13 +105,13 @@
                             <div class = "col">
                                 <img src="assets/musicNote.png">
                                 <h4 class="trigger" id="StackedChartStep3">Some other genres, such as Rock and Dance/Electronic,
-                                are beginning to gain more popularity.</h4>
+                                are beginning to gain more popularity in a push-and-pull arrangement.</h4>
                             </div>
 
                             <div class = "col" >
                                 <img src="assets/musicNote.png">
                                 <h4 class="trigger" id="StackedChartStep4">Most genres, however, are very unpopular in comparison.
-                                <br><br>Pop has always been the most commonly listened to genre.</h4>
+                                <br><br>Pop has always been the most commonly listened to genre with little sign of slowing down.</h4>
                             </div>
 
                         </div>
@@ -125,7 +127,7 @@
             </div>
 
             <div class ="Intro">
-                <h2>Intro before the chart</h2>
+                <h2>Some songs are tagged with multiple genres. But how common are these genre-bending songs?</h2>
             </div>
 
             <div class = "grid">
@@ -135,22 +137,26 @@
 
                             <div class = "col" >
                                 <img src="assets/musicNote.png">
-                                <h4 class="trigger" id="donutChartStep1">This is step 1. Start explaining what is being shown.</h4>
+                                <h4 class="trigger" id="donutChartStep1">Songs tagged with only 1 genre are decently
+                                popular, signaling a desire for very uniform songs.</h4>
                             </div>
 
                             <div class = "col" >
                                 <img src="assets/musicNote.png">
-                                <h4 class="trigger" id="donutChartStep2">This is step 2. Show some differences.</h4>
+                                <h4 class="trigger" id="donutChartStep2">But songs with 2 genres are significantly more popular,
+                                indicating that most top songs are difficult to classify in <em>only</em> one genre.</h4>
                             </div>
 
                             <div class = "col">
                                 <img src="assets/musicNote.png">
-                                <h4 class="trigger" id="donutChartStep3">This is step 3. Show some differences.</h4>
+                                <h4 class="trigger" id="donutChartStep3">A couple songs, however, are difficult to place in a
+                                particular genre and may end up with 3 tags.</h4>
                             </div>
 
                             <div class = "col" >
                                 <img src="assets/musicNote.png">
-                                <h4 class="trigger" id="donutChartStep4">This is step 4. Show some differences.</h4>
+                                <h4 class="trigger" id="donutChartStep4">And very rarely, are songs tagged with 4 or more genres.
+                                <br><br> Overall, listeners prefer songs with 2 or fewer genres.</h4>
                             </div>
 
                         </div>
@@ -166,7 +172,7 @@
             </div>
 
             <div class ="Intro">
-                Intro before the chart
+                <h2>How influential are these genre tags? Do they even matter?</h2>
             </div>
 
             <div class = "grid">
@@ -175,6 +181,7 @@
                         <div class = "row row-cols-1">
 
                             <div class = "col" >
+                                <img src="assets/musicNote.png">
                                 <h4 class="trigger" id="radarChartStep1">
                                     Each song has several key attributes that are unique to that song.<br>
                                     These attributes are computed, and set to range between 0 and 1.<br>
@@ -183,6 +190,7 @@
                             </div>
 
                             <div class = "col" >
+                                <img src="assets/musicNote.png">
                                 <h4 class="trigger" id="radarChartStep2">
                                     <strong>Danceability</strong> describes how suitable a track is for dancing based on a combination of musical elements including tempo, rhythm stability, beat strength, and overall regularity.<br>
                                     <strong>Valence</strong> describes the musical positiveness conveyed by a track. Tracks with high valence sound more positive (e.g. happy, cheerful, euphoric), while tracks with low valence sound more negative (e.g. sad, depressed, angry).<br>
@@ -191,34 +199,23 @@
                             </div>
 
                             <div class = "col">
+                                <img src="assets/musicNote.png">
                                 <h4 class="trigger" id="radarChartStep3">
                                     <strong>Acousticness</strong> is a confidence measure of whether the track is acoustic.<br>
                                     <strong>Speechiness</strong> detects the presence of spoken words in a track. The more exclusively speech-like the recording (e.g. talk show, audio book, poetry), the closer to 1.0.<br>
-                                    <strong>Energy</strong> epresents a perceptual measure of intensity and activity.
+                                    <strong>Energy</strong> represents a perceptual measure of intensity and activity.
                                 </h4>
                             </div>
 
                             <div class = "col" >
+                                <img src="assets/musicNote.png">
                                 <h4 class="trigger" id="radarChartStep4">
-                                    Pick a genre to plot its average attributes:
+                                    The two most popular genres, <span style="color: #005a00">Pop</span> and <span style="color: #b30000">HipHop</span>, are remarkably similar in their attributes.
+                                    <br><br>
+                                    Select another genre to see how it compares:
                                     <br>
-                                    <select class="form-select" onchange="updateRadarChart(value)">
-                                        <option value="pop">Pop</option>
+                                    <select class="form-select" onchange="drawGenre(value)" style="width: 200px">
                                         <option value="rock">Rock</option>
-                                        <option value="hip hop">Hip Hop</option>
-                                        <option value="Dance/Electronic">Dance/Electronic</option>
-                                        <option value="metal">Metal</option>
-                                        <option value="R&B">R&B</option>
-                                        <option value="Folk/Acoustic">Folk/Acoustic</option>
-                                        <option value="World/Traditional">World/Traditional</option>
-                                        <option value="latin">Latin</option>
-                                        <option value="country">Country</option>
-                                        <option value="easy listening">Easy Listening</option>
-                                    </select>
-                                    <select class="form-select" id="indicator-select" onchange="updateRadarChart(value)">
-                                        <option value="pop">Pop</option>
-                                        <option value="rock">Rock</option>
-                                        <option value="hip hop">Hip Hop</option>
                                         <option value="Dance/Electronic">Dance/Electronic</option>
                                         <option value="metal">Metal</option>
                                         <option value="R&B">R&B</option>
@@ -232,8 +229,18 @@
                             </div>
 
                             <div class = "col" >
+                                <img src="assets/musicNote.png">
                                 <h4 class="trigger" id="radarChartStep5">
-                                    Great! Now enter your own values to create a custom genre, and we'll show you most closely described.<br>
+                                    Aside from some unpopular outliers, like Metal and Easy Listening, we can see most songs with these
+                                    genres are actually quite similar, which further explains why they sound the same.
+                                 </h4>
+                            </div>
+
+                            <div class = "col" >
+                                <img src="assets/musicNote.png">
+                                <h4 class="trigger" id="radarChartStep6">
+                                    It can actually be difficult to guess which genres are made of which attributes. Try and make your own <span style="color: #ec7500">genre</span>,
+                                    and we'll show the song and genre that most closely resembles what you've described.<br>
                                     <div id="genreInput">
                                         Danceability: <input onchange="drawCustomGenre(danceability.value, energy.value, speechiness.value, acousticness.value, liveness.value, valence.value)" type="number" id="danceability" name="danceability" min="0.0" max="1.0" step="0.01">
                                         Valence: <input onchange="drawCustomGenre(danceability.value, energy.value, speechiness.value, acousticness.value, liveness.value, valence.value)" type="number" id="valence" name="valence" min="0.0" max="1.0" step="0.01">
@@ -247,6 +254,14 @@
                                 </h4>
                             </div>
 
+                            <div class = "col" >
+                                <img src="assets/musicNote.png">
+                                <h4 class="trigger" id="radarChartStep7">
+                                    <span id="closestGenre">Your closest genre: </span><br>
+                                    <span id="closestSong">Your closest song:</span>
+                                </h4>
+                            </div>
+
                         </div>
                     </div>
 
@@ -255,12 +270,12 @@
                             <svg id="radarChartSvg"></svg>
                         </div>
                     </div>
-
                 </div>
             </div>
-
-
-
+            <div class ="Intro">
+                <h2>The reason all Spotify top songs sound the same: most songs are from the same genre (Pop/HipHop), and those that
+                aren't have extremely similar attributes.</h2>
+            </div>
         </div>
     </body>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>

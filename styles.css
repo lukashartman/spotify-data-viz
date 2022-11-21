@@ -85,6 +85,11 @@ svg {
     width: 50px;
 }
 
+.col select{
+    display: block;
+    margin: 0 auto;
+}
+
 .sticky {
     position: -webkit-sticky;
     position: sticky;
