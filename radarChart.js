@@ -340,10 +340,21 @@ function computeClosestMatch(danceability, energy, speechiness, acousticness, li
     })
     console.log(closestGenre);
 
-    d3.select("#closestGenre").html('Your closest <span style="color: #005a00" >genre </span>: ' + closestGenre.genre);
-    d3.select("#closestSong").html('Your closest <span style="color: #b30000">song </span>: ' + closestSong.song + ' by ' + closestSong.artist);
+    d3.select("#closestGenre").html('Your closest <span style="color: #005a00" >genre</span>: ' + closestGenre.genre);
+    d3.select("#closestSong").html('Your closest <span style="color: #b30000">song</span>: ' + closestSong.song + ' by ' + closestSong.artist);
+    d3.select("#goToSpotifyButton")
+        .classed('hidden', false)
+        .text("View on Spotify")
+        .on('click', function(event, d){
+        window.open(encodeURI(url), '_blank');
+    })
+
+    let track = closestSong.song.replaceAll(' ', '%20');
+    let artist = closestSong.artist.replace(' ', '%20')+ '%20';
+    let url = 'https://open.spotify.com/search/artist:' + artist + 'track:' + track;
 
     drawClosest(closestGenre, closestSong);
+    //window.open(encodeURI(url), '_blank');
     document.getElementById('radarChartStep7').scrollIntoView(false);
 }
 
