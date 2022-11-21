@@ -120,7 +120,7 @@ function makeDonutWaypoints(){
             }
 
         },
-        offset: 100
+        offset: '50%'
     });
 }
 
