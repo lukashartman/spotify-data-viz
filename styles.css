@@ -54,6 +54,25 @@ text { font-family: SpotifyBook; }
     padding:10px;
 }
 
+#genreInput table{
+    width: 90%; /* Can be in percentage also. */
+    margin: 0 auto;
+    position: relative;
+    text-align: left;
+}
+
+#genreInput input{
+    width: 100%;
+    background-color: black;
+    padding-left: 5px;
+
+}
+
+#genreInput input::-moz-range-track {
+    background-color: rgba(30, 215, 96);
+    color: black;
+}
+
 #genreInput button{
     margin: 0 auto;
 }
@@ -66,6 +85,9 @@ svg {
     border-radius: 3px;
 
 }
+
+
+
 
 .col{
     position: relative;
