@@ -150,8 +150,9 @@ function step1Down(){
         .attr('fill', (d) => color(d.value))
         .on("mouseover", function(event, d){
             d3.select(this).transition().duration(300).attr("stroke", "black").attr("stroke-width", "4px");
-            donutTooltip.html('<strong>721 songs</strong> fall under only 1 genre')
-                .style("opacity", 1)
+            console.log(d);
+            donutTooltip.html('<strong>' + d.data[1] + ' Songs</strong> have ' + d.data[0])
+                .style("opacity", 1);
         })
         .on("mousemove", function(event,d){
             donutTooltip
@@ -200,6 +201,21 @@ function step2Down(){
         .enter()
         .append("path")
         .attr('fill', (d) => color(d.value))
+        .on("mouseover", function(event, d){
+            d3.select(this).transition().duration(300).attr("stroke", "black").attr("stroke-width", "4px");
+            console.log(d);
+            donutTooltip.html('<strong>' + d.data[1] + ' Songs</strong> have ' + d.data[0])
+                .style("opacity", 1);
+        })
+        .on("mousemove", function(event,d){
+            donutTooltip
+                .style("left", (event.pageX)+20 + "px")
+                .style("top", (event.pageY )+10 + "px")
+        })
+        .on("mouseout", function(d) {
+            d3.select(this).transition().duration(300).attr("stroke", "black").attr("stroke-width", "0px");
+            donutTooltip.style("opacity", 0);
+        })
 
 
 
@@ -239,6 +255,21 @@ function step3Down(){
         .enter()
         .append("path")
         .attr('fill', (d) => color(d.value))
+        .on("mouseover", function(event, d){
+            d3.select(this).transition().duration(300).attr("stroke", "black").attr("stroke-width", "4px");
+            console.log(d);
+            donutTooltip.html('<strong>' + d.data[1] + ' Songs</strong> have ' + d.data[0])
+                .style("opacity", 1);
+        })
+        .on("mousemove", function(event,d){
+            donutTooltip
+                .style("left", (event.pageX)+20 + "px")
+                .style("top", (event.pageY )+10 + "px")
+        })
+        .on("mouseout", function(d) {
+            d3.select(this).transition().duration(300).attr("stroke", "black").attr("stroke-width", "0px");
+            donutTooltip.style("opacity", 0);
+        })
 
     let angleInterpolation = d3.interpolate(4.973, 6.25);
 
@@ -276,6 +307,21 @@ function step4Down(){
         .enter()
         .append("path")
         .attr('fill', (d) => color(d.value))
+        .on("mouseover", function(event, d){
+            d3.select(this).transition().duration(300).attr("stroke", "black").attr("stroke-width", "4px");
+            console.log(d);
+            donutTooltip.html('<strong>' + d.data[1] + ' Songs</strong> have ' + d.data[0])
+                .style("opacity", 1);
+        })
+        .on("mousemove", function(event,d){
+            donutTooltip
+                .style("left", (event.pageX)+20 + "px")
+                .style("top", (event.pageY )+10 + "px")
+        })
+        .on("mouseout", function(d) {
+            d3.select(this).transition().duration(300).attr("stroke", "black").attr("stroke-width", "0px");
+            donutTooltip.style("opacity", 0);
+        })
 
     let angleInterpolation = d3.interpolate(6.25, 6.28319);
 
@@ -313,6 +359,21 @@ function step1Up(){
         .enter()
         .append("path")
         .attr('fill', (d) => color(d.value))
+        .on("mouseover", function(event, d){
+            d3.select(this).transition().duration(300).attr("stroke", "black").attr("stroke-width", "4px");
+            console.log(d);
+            donutTooltip.html('<strong>' + d.data[1] + ' Songs</strong> have ' + d.data[0])
+                .style("opacity", 1);
+        })
+        .on("mousemove", function(event,d){
+            donutTooltip
+                .style("left", (event.pageX)+20 + "px")
+                .style("top", (event.pageY )+10 + "px")
+        })
+        .on("mouseout", function(d) {
+            d3.select(this).transition().duration(300).attr("stroke", "black").attr("stroke-width", "0px");
+            donutTooltip.style("opacity", 0);
+        })
 
 
     let angleInterpolation = d3.interpolate(2.7, 0);
@@ -350,7 +411,22 @@ function step2Up(){
         .data(pie(Object.entries(donutChartRatios)))
         .enter()
         .append("path")
-        .attr('fill', (d) => color(d.value))
+        .attr('fill', (d) => color(d.value)).on("mouseover", function(event, d){
+            d3.select(this).transition().duration(300).attr("stroke", "black").attr("stroke-width", "4px");
+            console.log(d);
+            donutTooltip.html('<strong>' + d.data[1] + ' Songs</strong> have ' + d.data[0])
+                .style("opacity", 1);
+        })
+        .on("mousemove", function(event,d){
+            donutTooltip
+                .style("left", (event.pageX)+20 + "px")
+                .style("top", (event.pageY )+10 + "px")
+        })
+        .on("mouseout", function(d) {
+            d3.select(this).transition().duration(300).attr("stroke", "black").attr("stroke-width", "0px");
+            donutTooltip.style("opacity", 0);
+        })
+
 
 
     let angleInterpolation = d3.interpolate(4.973, 2.7);
@@ -389,6 +465,21 @@ function step3Up(){
         .enter()
         .append("path")
         .attr('fill', (d) => color(d.value))
+        .on("mouseover", function(event, d){
+            d3.select(this).transition().duration(300).attr("stroke", "black").attr("stroke-width", "4px");
+            console.log(d);
+            donutTooltip.html('<strong>' + d.data[1] + ' Songs</strong> have ' + d.data[0])
+                .style("opacity", 1);
+        })
+        .on("mousemove", function(event,d){
+            donutTooltip
+                .style("left", (event.pageX)+20 + "px")
+                .style("top", (event.pageY )+10 + "px")
+        })
+        .on("mouseout", function(d) {
+            d3.select(this).transition().duration(300).attr("stroke", "black").attr("stroke-width", "0px");
+            donutTooltip.style("opacity", 0);
+        })
 
     let angleInterpolation = d3.interpolate(6.25, 4.973);
 
@@ -426,6 +517,21 @@ function step4Up(){
         .enter()
         .append("path")
         .attr('fill', (d) => color(d.value))
+        .on("mouseover", function(event, d){
+            d3.select(this).transition().duration(300).attr("stroke", "black").attr("stroke-width", "4px");
+            console.log(d);
+            donutTooltip.html('<strong>' + d.data[1] + ' Songs</strong> have ' + d.data[0])
+                .style("opacity", 1);
+        })
+        .on("mousemove", function(event,d){
+            donutTooltip
+                .style("left", (event.pageX)+20 + "px")
+                .style("top", (event.pageY )+10 + "px")
+        })
+        .on("mouseout", function(d) {
+            d3.select(this).transition().duration(300).attr("stroke", "black").attr("stroke-width", "0px");
+            donutTooltip.style("opacity", 0);
+        })
 
     let angleInterpolation = d3.interpolate( 6.28319, 6.25);
 
